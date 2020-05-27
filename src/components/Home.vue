@@ -33,7 +33,7 @@
     <v-content>
       <v-container>
        <v-container row>
-            <h4 class="display-1">ประกาศข่าว</h4>
+            <h4 class="display-1">ประกาศข่าว Test Auto Deploy on travis</h4>
             <v-spacer></v-spacer>
             <router-link link to='allNotice'>ดูประกาศข่าวทั้งหมด</router-link>
         </v-container>
