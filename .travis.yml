@@ -1,0 +1,24 @@
+language: node_js
+cache:
+  directories:
+  - node_modules
+node_js:
+  - "12"
+cache: yarn
+branches:
+  only:
+  - master
+before_script:
+  - npm install -g firebase-tools
+  - cd functions && npm install 
+  - cd ..
+install:
+  - yarn
+script:
+  - yarn
+  - yarn build
+after_success:
+  - firebase use --token ${FIREBASE_TOKEN}
+  - firebase use --add ${PROJECT_ID}
+  - firebase deploy --token "{$FIREBASE_TOKEN}" --non-interactive
+  # --ignore-missing-functions --allow-deletes
