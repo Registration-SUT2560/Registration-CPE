@@ -6,7 +6,9 @@
         <v-card-text>
           <v-layout column>
             <v-flex xs12 sm6 md4 d-flex>
-              <v-btn color="primary" width="100%" @click="handleUploadClick">Import</v-btn>
+              <v-btn color="primary" width="100%" @click="handleUploadClick"
+                >Import</v-btn
+              >
               <input
                 type="file"
                 ref="uploadFile"
@@ -16,10 +18,22 @@
               />
             </v-flex>
             <v-flex xs12 sm6 md4 d-flex>
-              <v-btn color="error" class="mt-3" @click="fileInput = []" width="100%">Clear</v-btn>
+              <v-btn
+                color="error"
+                class="mt-3"
+                @click="fileInput = []"
+                width="100%"
+                >Clear</v-btn
+              >
             </v-flex>
             <v-flex xs12 sm6 md4 d-flex>
-              <v-btn color="success" class="mt-3" @click="importData" width="100%">นำเข้าข้อมูล</v-btn>
+              <v-btn
+                color="success"
+                class="mt-3"
+                @click="importData"
+                width="100%"
+                >นำเข้าข้อมูล</v-btn
+              >
             </v-flex>
           </v-layout>
         </v-card-text>
@@ -42,7 +56,14 @@
               <tbody>
                 <tr v-for="file in fileInput" :key="file.รหัสนักศึกษา">
                   <td>
-                    <img :src="file.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" width="200" height="200">
+                    <img
+                      :src="
+                        file.image ||
+                          'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
+                      "
+                      width="200"
+                      height="200"
+                    />
                   </td>
                   <td>{{ file.รหัสนักศึกษา }}</td>
                   <td>{{ file.คำนำหน้า }}</td>
@@ -55,9 +76,7 @@
             </v-simple-table>
           </v-flex>
         </v-card-text>
-        <v-snackbar v-model="snackbar">
-
-        </v-snackbar>
+        <v-snackbar v-model="snackbar"> </v-snackbar>
       </v-card>
     </v-layout>
   </v-container>
@@ -66,61 +85,67 @@
 <script>
 // import VCsvImport from "vue-csv-import";
 import firebase from "firebase";
-import XLSX from 'xlsx'
-import Alert from '../../Alert'
+import XLSX from "xlsx";
+import Alert from "../../Alert";
 
 export default {
   props: {
     accept: {
       type: String,
-      default: ".xlsx, .xls"
-    }
+      default: ".xlsx, .xls",
+    },
   },
   data() {
     return {
       fileInput: [],
       dataFrame: {
         header: [],
-        body: []
+        body: [],
       },
       workbook: null,
       snackbar: null,
-      message: '',
+      message: "",
       success: false,
-      fail: false
+      fail: false,
     };
   },
   components: {
-    Alert
+    Alert,
   },
   methods: {
     importData: function() {
       if (this.fileInput.length > 0) {
-        this.fileInput.forEach(data => {
+        this.fileInput.forEach((data) => {
           firebase
             .database()
             .ref("student/" + data.รหัสนักศึกษา)
             .set({
-              image: data.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+              image:
+                data.image ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
               prefix: data.คำนำหน้า,
               firstname: data.ชื่อ,
               lastname: data.สกุล,
               year: data.ปีการศึกษา,
-              gpax: data.GPAX
+              gpax: data.GPAX,
             });
+          firebase
+            .database()
+            .ref("noticeStatus" + data.รหัสนักศึกษา)
+            .set({ status: true });
         });
 
         // generate student user
-        this.fileInput.forEach(data => {
+        this.fileInput.forEach((data) => {
           firebase
             .database()
             .ref("student_login/" + data.รหัสนักศึกษา)
             .set({
               username: data.รหัสนักศึกษา,
-              password: data.รหัสนักศึกษา.slice(4)
+              password: data.รหัสนักศึกษา.slice(4),
             });
         });
-        this.fileInput = []
+        this.fileInput = [];
         this.success = true;
       } else {
         this.fail = true;
@@ -128,7 +153,7 @@ export default {
     },
 
     readXlsx: function(convertData) {
-      convertData.body.forEach(data => {
+      convertData.body.forEach((data) => {
         this.fileInput.push(data);
       });
     },
@@ -140,13 +165,13 @@ export default {
     handleUploadChange: function(event) {
       let files = event.target.files[0];
       this.convertWorkbook(files)
-        .then(workbook => {
+        .then((workbook) => {
           let xlsxArray = XLSX.utils.sheet_to_json(
             workbook.Sheets[workbook.SheetNames[0]]
           );
           this.workbook = workbook;
           this.initialTable(this.xlsxArrToTableArr(xlsxArray));
-          this.readXlsx(this.dataFrame)
+          this.readXlsx(this.dataFrame);
         })
         .catch(() => {
           this.$emit("SelectFile", false);
@@ -154,7 +179,7 @@ export default {
     },
     convertWorkbook: function(file) {
       let reader = new FileReader();
-      let fix = data => {
+      let fix = (data) => {
         let o = "",
           l = 0,
           w = 10240;
@@ -169,7 +194,7 @@ export default {
       };
       return new Promise((resolve, reject) => {
         try {
-          reader.onload = event => {
+          reader.onload = (event) => {
             let data = event.target.result;
             if (this.rABS) {
               resolve(XLSX.read(data, { type: "binary" }));
@@ -177,7 +202,7 @@ export default {
               resolve(XLSX.read(btoa(fix(data)), { type: "base64" }));
             }
           };
-          reader.onerror = error => {
+          reader.onerror = (error) => {
             reject(error);
           };
           if (this.rABS) {
@@ -204,7 +229,7 @@ export default {
       });
       let tableHeader = Object.keys(xlsxArray[maxLengthIndex]);
       let row = {};
-      xlsxArray.forEach(item => {
+      xlsxArray.forEach((item) => {
         row = {};
         for (let i = 0; i < maxLength; i++) {
           row[tableHeader[i]] = item[tableHeader[i]] || "";
@@ -213,13 +238,13 @@ export default {
       });
       return {
         header: tableHeader,
-        data: tableArray
+        data: tableArray,
       };
     },
     tableArrToXlsxArr: function({ data, header }) {
       let xlsxArray = [];
       let temp = {};
-      data.forEach(row => {
+      data.forEach((row) => {
         temp = {};
         row.forEach((item, index) => {
           temp[header[index]] = item;
@@ -237,10 +262,10 @@ export default {
       this.$refs.uploadFile.value = null;
       this.dataFrame = {
         header: [],
-        body: []
+        body: [],
       };
       this.workbook = null;
-    }
-  }
+    },
+  },
 };
 </script>
