@@ -1,17 +1,37 @@
 <template>
   <v-container>
+    <Alert
+      :open="success"
+      topic="แจ้งเตือน"
+      desc="บันทึกสำเร็จ"
+      :callback="() => (this.success = false)"
+    />
+    <Alert
+      :open="fail"
+      topic="แจ้งเตือน"
+      desc="บันทึกไม่สำเร็จ"
+      :callback="() => (this.fail = false)"
+    />
     <v-card max-width="510" class="mx-auto elevation-3">
       <v-card-title>เลือกอาจารย์ที่ปรึกษา</v-card-title>
       <v-card-text>
         <v-layout column>
           <v-flex>
-            <v-select :label="i+1" :items="teachers" v-for="(teacher, i) in teachers" :key="i" v-model="selected[i]"></v-select>
+            <v-select
+              :label="i + 1"
+              :items="teachers"
+              v-for="(teacher, i) in teachers"
+              :key="i"
+              v-model="selected[i]"
+            ></v-select>
           </v-flex>
         </v-layout>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click.prevent="notDuplicate">ยืนยันการเลือก</v-btn>
+        <v-btn color="primary" @click.prevent="notDuplicate"
+          >ยืนยันการเลือก</v-btn
+        >
       </v-card-actions>
     </v-card>
     <v-snackbar v-model="duplicateError" color="error">
@@ -28,6 +48,7 @@
  *
  */
 import firebase from "firebase";
+import Alert from "../../Alert";
 
 export default {
   data() {
@@ -39,20 +60,23 @@ export default {
       selected: [],
       project: [],
       duplicateError: false,
-      register: []
+      register: [],
+      success: false,
+      fail: false,
     };
+  },
+  components: {
+    Alert,
   },
   methods: {
     // function validation of select lecturer non duplicate lecturer and non duplicate selected
     notDuplicate: function() {
-      let date = new Date()
-      this.project = [
-        ...new Set(this.selected)
-      ];
+      let date = new Date();
+      this.project = [...new Set(this.selected)];
       if (this.project.length === this.teachers.length) {
         firebase
           .database()
-          .ref("lecturer_register/" + this.profile.year + '/' + this.user)
+          .ref("lecturer_register/" + this.profile.year + "/" + this.user)
           .set({
             teacher: this.project,
             student: this.user,
@@ -68,49 +92,55 @@ export default {
               ":" +
               date.getMinutes() +
               ":" +
-              date.getSeconds()
+              date.getSeconds(),
           });
+          console.log("Selected Teacher success")
+        this.success = true;
       } else {
         this.duplicateError = true;
+        console.log("Selected Teacher failed")
       }
-    }
+    },
   },
   created() {
     this.$store.dispatch("settingStudent", this.students);
     this.$store.dispatch("settingTeacher", this.teachers);
 
-    this.students.forEach(value => {
+    this.students.forEach((value) => {
       if (value.id === this.user) {
         this.profile = {
           fullname: value.prefix + " " + value.firstname + " " + value.lastname,
           gpax: value.gpax,
           year: value.year,
-          image: value.image
+          image: value.image,
         };
         return;
       }
     });
-    /* eslint-disable */ 
-    firebase.database().ref('teacher_register/' + this.profile.year)
-      .on('child_added', snapshot => {
-        this.register.push(snapshot.key)
-        console.log(this.register)
-      })
+    /* eslint-disable */
 
-    let filterTeacher = []
-    this.teachers.forEach(snapshot => {
+    firebase
+      .database()
+      .ref("teacher_register/" + this.profile.year)
+      .on("child_added", (snapshot) => {
+        this.register.push(snapshot.key);
+        console.log(this.register);
+      });
+
+    let filterTeacher = [];
+    this.teachers.forEach((snapshot) => {
       for (let i = 0; i < this.register.length; i++) {
         if (snapshot.value === this.register[i]) {
           filterTeacher.push({
             value: snapshot.value,
-            text: snapshot.text
-          })
-          break
+            text: snapshot.text,
+          });
+          break;
         }
       }
-    })
+    });
 
-    this.teachers = filterTeacher
-  }
+    this.teachers = filterTeacher;
+  },
 };
 </script>
