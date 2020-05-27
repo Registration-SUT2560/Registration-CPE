@@ -32,6 +32,7 @@
                 <tr>
                   <th>image</th>
                   <th>รหัสนักศึกษา</th>
+                  <th>คำนำหน้า</th>
                   <th>ชื่อ</th>
                   <th>สกุล</th>
                   <th>ปีการศึกษา</th>
@@ -44,6 +45,7 @@
                     <img :src="file.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" width="200" height="200">
                   </td>
                   <td>{{ file.รหัสนักศึกษา }}</td>
+                  <td>{{ file.คำนำหน้า }}</td>
                   <td>{{ file.ชื่อ }}</td>
                   <td>{{ file.สกุล }}</td>
                   <td>{{ file.ปีการศึกษา }}</td>
@@ -65,6 +67,7 @@
 // import VCsvImport from "vue-csv-import";
 import firebase from "firebase";
 import XLSX from 'xlsx'
+import Alert from '../../Alert'
 
 export default {
   props: {
@@ -82,8 +85,13 @@ export default {
       },
       workbook: null,
       snackbar: null,
-      message: ''
+      message: '',
+      success: false,
+      fail: false
     };
+  },
+  components: {
+    Alert
   },
   methods: {
     importData: function() {
@@ -94,6 +102,7 @@ export default {
             .ref("student/" + data.รหัสนักศึกษา)
             .set({
               image: data.image || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+              prefix: data.คำนำหน้า,
               firstname: data.ชื่อ,
               lastname: data.สกุล,
               year: data.ปีการศึกษา,
@@ -112,11 +121,10 @@ export default {
             });
         });
         this.fileInput = []
-        this.message = "Upload สำเร็จ" 
+        this.success = true;
       } else {
-        this.message = "Upload ไม่สำเร็จ"
+        this.fail = true;
       }
-      this.snackbar = !this.snackbar
     },
 
     readXlsx: function(convertData) {
