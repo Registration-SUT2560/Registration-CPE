@@ -131,7 +131,7 @@ export default {
             });
           firebase
             .database()
-            .ref("noticeStatus" + data.รหัสนักศึกษา)
+            .ref("noticeStatus/" + data.รหัสนักศึกษา)
             .set({ status: true });
         });
 

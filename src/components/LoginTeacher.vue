@@ -9,7 +9,7 @@
     <Alert
       :open="fail"
       topic="แจ้งเตือน"
-      desc="บันทึกไม่สำเร็จ"
+      desc="เข้าสู่ระบบไม่สำเร็จ"
       :callback="() => (this.fail = false)"
     />
     <v-content>
@@ -18,7 +18,9 @@
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12">
               <v-toolbar color="primary" dark flat>
-                <v-toolbar-title>สำหรับอาจารย์</v-toolbar-title>
+                <v-toolbar-title
+                  >สำหรับอาจารย์ {{ user.username }}</v-toolbar-title
+                >
                 <v-spacer></v-spacer>
               </v-toolbar>
               <v-card-text>
@@ -42,7 +44,9 @@
               <v-card-actions>
                 <v-btn text replace to="/home">กลับ</v-btn>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="login(user)">เข้าสู่ระบบ</v-btn>
+                <v-btn color="primary" @click.prevent="login(user)"
+                  >เข้าสู่ระบบ</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -58,12 +62,13 @@ export default {
   data() {
     return {
       user: {
-        username: null,
-        password: null,
+        username: "",
+        password: "",
       },
+      profiles: [],
+      teacher: {},
       success: false,
       fail: false,
-      userCheck: this.$store.getters.getUser
     };
   },
   components: {
@@ -71,15 +76,16 @@ export default {
   },
   methods: {
     login: function(user) {
-      if(this.user != null){
-        this.$store.dispatch('loginTeacher', user);
-        console.log(this.user);
-        this.success = true;
-      }else {
-        this.fail = true;
-      }
+      this.$store.dispatch("loginTeacher", user);
+    },
+  },
+  created() {
+    this.$store.dispatch("settingTeacher", this.profiles);
+  },
+  watch: {
+    user: function() {
       
-    }
+    },
   },
 };
 </script>

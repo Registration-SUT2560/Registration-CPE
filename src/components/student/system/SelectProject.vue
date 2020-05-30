@@ -9,7 +9,7 @@
     <Alert
       :open="fail"
       topic="แจ้งเตือน"
-      desc="บันทึกไม่สำเร็จ"
+      desc="ยังไม่ได้เลือกหรือเลือกซ้ำ"
       :callback="() => (this.fail = false)"
     />
     <v-card max-width="510" class="mx-auto elevation-3">
@@ -79,6 +79,7 @@ export default {
           .ref("lecturer_register/" + this.profile.year + "/" + this.user)
           .set({
             teacher: this.project,
+            status: false,
             student: this.user,
             gpax: this.profile.gpax,
             date:
@@ -94,11 +95,12 @@ export default {
               ":" +
               date.getSeconds(),
           });
-          console.log("Selected Teacher success")
+        console.log("Selected Teacher success");
         this.success = true;
       } else {
         this.duplicateError = true;
-        console.log("Selected Teacher failed")
+        this.fail = true;
+        console.log("Selected Teacher failed");
       }
     },
   },
@@ -141,6 +143,6 @@ export default {
     });
 
     this.teachers = filterTeacher;
-  },
+  }
 };
 </script>

@@ -4,7 +4,7 @@
       <form>
         <v-responsive>
           <v-flex>
-            <v-card class="mx-auto" max-width="70%" color>
+            <v-card class="mx-auto"  max-width="70%" color>
               <v-toolbar color="primary">
                 <v-toolbar-title>สร้างประกาศ</v-toolbar-title>
                 <v-spacer></v-spacer>
@@ -115,7 +115,27 @@
           <v-card-text>&emsp;&emsp;{{ message.information }}</v-card-text>
           <v-layout v-if="message.imageUrl != ''">
             <v-flex xs12 xm4 offset-sm2>
-              <img :src="message.imageUrl" height="400" width="600"/>
+              <v-img
+                :src="message.imageUrl"
+                :lazy-src="message.imageUrl"
+                aspect-ratio="1"
+                class="grey lighten-2; mx-auto"
+                max-height="400"
+                max-width="600"
+              >
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
+                  >
+                    <v-progress-circular
+                      indeterminate
+                      color="grey lighten-5"
+                    ></v-progress-circular>
+                  </v-row>
+                </template>
+              </v-img>
             </v-flex>
           </v-layout>
           <v-layout justify-end wrap>
