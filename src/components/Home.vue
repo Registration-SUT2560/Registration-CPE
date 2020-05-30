@@ -32,34 +32,57 @@
 
     <v-content>
       <v-container>
-       <v-container row>
-            <h4 class="display-1">ประกาศข่าว Test Auto Deploy on travis</h4>
-            <v-spacer></v-spacer>
-            <router-link link to='allNotice'>ดูประกาศข่าวทั้งหมด</router-link>
+        <v-container row>
+          <h4 class="display-1">ประกาศข่าว Test Auto Deploy on travis</h4>
+          <v-spacer></v-spacer>
+          <router-link link to="allNotice">ดูประกาศข่าวทั้งหมด</router-link>
         </v-container>
-        <v-container dense v-for="(message, i) in notices.slice(0,3)" :key="i">
-            <v-card class="mx-auto" max-width="80%" > <!-- color="#ffe4c4" -->
-             <v-alert border="top" colored-border color="info accent-4" elevation="2">
-                    <v-card-title>{{message.title}}</v-card-title>
-                    <v-card-text>
-                        &emsp;&emsp;{{message.information}}
-                    </v-card-text>
-                    <v-layout v-if="message.imageUrl != ''">
-                      <v-flex xs12 xm4 offset-sm2>
-                        <img :src="message.imageUrl" height="400" width="600">
-                      </v-flex>
-                    </v-layout>
-                    <v-layout justify-end wrap>
-                        <v-flex xs12 sm4 text-center>
-                            <v-card-text v-text="message.date"></v-card-text>
-                        </v-flex>
-                        <!-- <v-flex xs12 sm2 text-center>
+        <v-container dense v-for="(message, i) in notices.slice(0, 3)" :key="i">
+          <v-card class="mx-auto" max-width="80%">
+            <!-- color="#ffe4c4" -->
+            <v-alert
+              border="top"
+              colored-border
+              color="info accent-4"
+              elevation="2"
+            >
+              <v-card-title>{{ message.title }}</v-card-title>
+              <v-card-text> &emsp;&emsp;{{ message.information }} </v-card-text>
+              <v-layout v-if="message.imageUrl != ''">
+                <v-flex xs12 xm4 offset-sm2>
+                  <v-img
+                    :src="message.imageUrl"
+                    :lazy-src="message.imageUrl"
+                    aspect-ratio="1"
+                    class="grey lighten-2; mx-auto"
+                    max-height="400"
+                    max-width="600"
+                  >
+                    <template v-slot:placeholder>
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
+                </v-flex>
+              </v-layout>
+              <v-layout justify-end wrap>
+                <v-flex xs12 sm4 text-center>
+                  <v-card-text v-text="message.date"></v-card-text>
+                </v-flex>
+                <!-- <v-flex xs12 sm2 text-center>
                             <v-card-text>01-01-0001</v-card-text>
                         </v-flex> -->
-                    </v-layout>       
-              </v-alert>
-            </v-card>
-          
+              </v-layout>
+            </v-alert>
+          </v-card>
         </v-container>
       </v-container>
     </v-content>
@@ -70,9 +93,8 @@
 export default {
   data() {
     return {
-      drawer:null,
-      notices:[]
-      
+      drawer: null,
+      notices: [],
     };
   },
   created() {
@@ -82,5 +104,3 @@ export default {
   },
 };
 </script>
-
-
