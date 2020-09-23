@@ -116,7 +116,7 @@ export default {
 
     firebase
       .database()
-      .ref("statistic/" + this.$store.getters.getSchoolYear)
+      .ref("statistic/" + this.$store.getters.getSchoolYear)    //+ this.$store.getters.getSchoolYear
       .on("child_added", snapshot => {
         this.teachers.forEach(element => {
           if (element.value === snapshot.key) {

@@ -102,6 +102,7 @@
         </v-card>
       </div>
     </v-container>  -->
+    <br>
     <v-container dense v-for="(message, i) in notices" :key="i">
       <v-card class="mx-auto" max-width="70%">
         <!-- color="#ffe4c4" -->
@@ -114,12 +115,12 @@
           <v-card-title>{{ message.title }}</v-card-title>
           <v-card-text>&emsp;&emsp;{{ message.information }}</v-card-text>
           <v-layout v-if="message.imageUrl != ''">
-            <v-flex xs12 xm4 offset-sm2>
+            <v-row align="center" justify="center">
               <v-img
                 :src="message.imageUrl"
                 :lazy-src="message.imageUrl"
                 aspect-ratio="1"
-                class="grey lighten-2; mx-auto"
+                class="grey lighten-2"
                 max-height="400"
                 max-width="600"
               >
@@ -136,7 +137,8 @@
                   </v-row>
                 </template>
               </v-img>
-            </v-flex>
+            </v-row>
+              
           </v-layout>
           <v-layout justify-end wrap>
             <v-flex xs12 sm4 text-center>

@@ -33,12 +33,12 @@
     <v-content>
       <v-container>
         <v-container row>
-          <h4 class="display-1">ประกาศข่าว Test Auto Deploy on travis</h4>
+          <h4 class="display-1">ประกาศข่าว</h4>
           <v-spacer></v-spacer>
           <router-link link to="allNotice">ดูประกาศข่าวทั้งหมด</router-link>
         </v-container>
         <v-container dense v-for="(message, i) in notices.slice(0, 3)" :key="i">
-          <v-card class="mx-auto" max-width="80%">
+          <v-card mx-auto max-width="80%">
             <!-- color="#ffe4c4" -->
             <v-alert
               border="top"
@@ -54,7 +54,7 @@
                     :src="message.imageUrl"
                     :lazy-src="message.imageUrl"
                     aspect-ratio="1"
-                    class="grey lighten-2; mx-auto"
+                    class="grey lighten-2;"
                     max-height="400"
                     max-width="600"
                   >

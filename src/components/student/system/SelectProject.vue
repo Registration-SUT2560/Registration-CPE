@@ -34,10 +34,10 @@
         >
       </v-card-actions>
     </v-card>
-    <v-snackbar v-model="duplicateError" color="error">
+    <!-- <v-snackbar v-model="duplicateError" color="error">
       ยังไม่ได้เลือกหรือเลือกซ้ำ
       <v-btn text @click="duplicateError = false">ปิด</v-btn>
-    </v-snackbar>
+    </v-snackbar> -->
   </v-container>
 </template>
 
@@ -104,10 +104,38 @@ export default {
       }
     },
   },
+  beforeCreate() {
+    console.log("before created");
+  },
   created() {
     this.$store.dispatch("settingStudent", this.students);
     this.$store.dispatch("settingTeacher", this.teachers);
 
+    /* eslint-disable */
+
+    // firebase
+    //   .database()
+    //   .ref("teacher_register/" + this.profile.year)
+    //   .on("child_added", (snapshot) => {
+    //     this.register.push(snapshot.key);
+    //     console.log(this.register);
+    //   });
+
+    // let filterTeacher = [];
+    // this.teachers.forEach((snapshot) => {
+    //   for (let i = 0; i < this.register.length; i++) {
+    //     if (snapshot.value === this.register[i]) {
+    //       filterTeacher.push({
+    //         value: snapshot.value,
+    //         text: snapshot.text,
+    //       });
+    //       break;
+    //     }
+    //   }
+    // });
+    // this.teachers = filterTeacher;
+  },
+  mounted() {
     this.students.forEach((value) => {
       if (value.id === this.user) {
         this.profile = {
@@ -119,7 +147,6 @@ export default {
         return;
       }
     });
-    /* eslint-disable */
 
     firebase
       .database()
@@ -141,8 +168,7 @@ export default {
         }
       }
     });
-
     this.teachers = filterTeacher;
-  }
+  },
 };
 </script>
