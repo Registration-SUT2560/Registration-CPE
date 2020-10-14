@@ -1,17 +1,5 @@
 <template>
   <v-container>
-    <Alert
-      :open="success"
-      topic="แจ้งเตือน"
-      desc="บันทึกสำเร็จ"
-      :callback="() => (this.success = false)"
-    />
-    <Alert
-      :open="fail"
-      topic="แจ้งเตือน"
-      desc="ยังไม่ได้เลือกหรือเลือกซ้ำ"
-      :callback="() => (this.fail = false)"
-    />
     <v-card max-width="510" class="mx-auto elevation-3">
       <v-card-title>เลือกอาจารย์ที่ปรึกษา</v-card-title>
       <v-card-text>
@@ -34,10 +22,10 @@
         >
       </v-card-actions>
     </v-card>
-    <!-- <v-snackbar v-model="duplicateError" color="error">
+    <v-snackbar v-model="duplicateError" color="error">
       ยังไม่ได้เลือกหรือเลือกซ้ำ
       <v-btn text @click="duplicateError = false">ปิด</v-btn>
-    </v-snackbar> -->
+    </v-snackbar>
   </v-container>
 </template>
 
@@ -47,30 +35,24 @@
  * Becareful this component
  *
  */
+import swal from 'sweetalert';
 import firebase from "firebase";
-import Alert from "../../Alert";
-
 export default {
   data() {
     return {
       teachers: [],
       students: [],
-      user: this.$store.getters.getUser.data,
+      user: this.$store.getters.getUser,
       profile: {},
       selected: [],
       project: [],
       duplicateError: false,
       register: [],
-      success: false,
-      fail: false,
     };
-  },
-  components: {
-    Alert,
   },
   methods: {
     // function validation of select lecturer non duplicate lecturer and non duplicate selected
-    notDuplicate: function() {
+    notDuplicate: function () {
       let date = new Date();
       this.project = [...new Set(this.selected)];
       if (this.project.length === this.teachers.length) {
@@ -79,7 +61,6 @@ export default {
           .ref("lecturer_register/" + this.profile.year + "/" + this.user)
           .set({
             teacher: this.project,
-            status: false,
             student: this.user,
             gpax: this.profile.gpax,
             date:
@@ -95,47 +76,14 @@ export default {
               ":" +
               date.getSeconds(),
           });
-        console.log("Selected Teacher success");
-        this.success = true;
       } else {
         this.duplicateError = true;
-        this.fail = true;
-        console.log("Selected Teacher failed");
       }
     },
-  },
-  beforeCreate() {
-    console.log("before created");
   },
   created() {
     this.$store.dispatch("settingStudent", this.students);
     this.$store.dispatch("settingTeacher", this.teachers);
-
-    /* eslint-disable */
-
-    // firebase
-    //   .database()
-    //   .ref("teacher_register/" + this.profile.year)
-    //   .on("child_added", (snapshot) => {
-    //     this.register.push(snapshot.key);
-    //     console.log(this.register);
-    //   });
-
-    // let filterTeacher = [];
-    // this.teachers.forEach((snapshot) => {
-    //   for (let i = 0; i < this.register.length; i++) {
-    //     if (snapshot.value === this.register[i]) {
-    //       filterTeacher.push({
-    //         value: snapshot.value,
-    //         text: snapshot.text,
-    //       });
-    //       break;
-    //     }
-    //   }
-    // });
-    // this.teachers = filterTeacher;
-  },
-  mounted() {
     this.students.forEach((value) => {
       if (value.id === this.user) {
         this.profile = {
@@ -147,7 +95,7 @@ export default {
         return;
       }
     });
-
+    /* eslint-disable */
     firebase
       .database()
       .ref("teacher_register/" + this.profile.year)
@@ -155,7 +103,6 @@ export default {
         this.register.push(snapshot.key);
         console.log(this.register);
       });
-
     let filterTeacher = [];
     this.teachers.forEach((snapshot) => {
       for (let i = 0; i < this.register.length; i++) {

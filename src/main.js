@@ -5,10 +5,16 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 import firebase from 'firebase'
 
+
 import VuejsonToCsv from "vue-json-to-csv";
 import vueXlsxTable from "vue-xlsx-table";
 Vue.use(vueXlsxTable, { rABS: false });
 Vue.use(VuejsonToCsv);
+
+import VueSimpleAlert from "vue-simple-alert";
+Vue.use(VueSimpleAlert);
+
+Vue.config.productionTip = false
 
 var firebaseConfig = {
   apiKey: "AIzaSyCV_CUBsnEI028O4nJgjdQejYj7FW9JimQ",
@@ -21,8 +27,6 @@ var firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-Vue.config.productionTip = false
 
 new Vue({
   router,

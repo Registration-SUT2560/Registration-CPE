@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app temporary>
+    <v-navigation-drawer v-model="drawer" app>
       <v-container>
         <h6 class="title">ปีการศึกษา</h6>
       </v-container>
@@ -93,12 +93,12 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary" dark>
+    <v-app-bar id="app-bar" absolute app color="transparent" flat height="75">
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>Project Registration System</v-toolbar-title>
     </v-app-bar>
 
-    <v-content>
+    <v-content class="grey lighten-5">
       <v-container fluid fill-height>
         <v-layout>
           <v-flex>
@@ -116,7 +116,13 @@ export default {
     return {
       drawer: null,
     };
-  }
+  },
+  methods: {
+    logOut: function () {
+      this.$store.commit("logOut");
+      this.$router.push("/home");
+    },
+  },
 };
 </script>
 

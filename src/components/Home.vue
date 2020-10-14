@@ -1,101 +1,66 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app>
-      <v-container>
-        <h6 class="title" align="center">เข้าสู่ระบบ</h6>
+    <AppBar />
+    <Drawer />
+    <v-content class="grey lighten-5">
+      <v-container fluid row px-6 py-6>
+        <h4 class="display-1">ประกาศข่าว</h4>
+        <v-spacer></v-spacer>
+        <router-link link to="allNotice">ดูประกาศข่าวทั้งหมด</router-link>
       </v-container>
-      <v-divider></v-divider>
-      <v-list dense>
-        <v-list-item link to="/slogin">
-          <v-list-item-action>
-            <v-icon>mdi-account-box</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>สำหรับนักศึกษา</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link to="/tlogin">
-          <v-list-item-action>
-            <v-icon>mdi-account-box</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>สำหรับอาจารย์</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Project Registration System</v-toolbar-title>
-    </v-app-bar>
-
-    <v-content>
-      <v-container>
-        <v-container row>
-          <h4 class="display-1">ประกาศข่าว</h4>
-          <v-spacer></v-spacer>
-          <router-link link to="allNotice">ดูประกาศข่าวทั้งหมด</router-link>
-        </v-container>
-        <v-container dense v-for="(message, i) in notices.slice(0, 3)" :key="i">
-          <v-card mx-auto max-width="80%">
+      <v-container
+        fluid
+        dense
+        v-for="(message, i) in notices.slice(0, 3)"
+        :key="i"
+      >
+        <v-layout justify-center align-center>
+          <v-card width="1000">
             <!-- color="#ffe4c4" -->
-            <v-alert
-              border="top"
-              colored-border
-              color="info accent-4"
-              elevation="2"
-            >
-              <v-card-title>{{ message.title }}</v-card-title>
-              <v-card-text> &emsp;&emsp;{{ message.information }} </v-card-text>
-              <v-layout v-if="message.imageUrl != ''">
-                <v-flex xs12 xm4 offset-sm2>
-                  <v-img
-                    :src="message.imageUrl"
-                    :lazy-src="message.imageUrl"
-                    aspect-ratio="1"
-                    class="grey lighten-2;"
-                    max-height="400"
-                    max-width="600"
+            <v-card-title>{{ message.title }}</v-card-title>
+            <v-card-text> &emsp;&emsp;{{ message.information }} </v-card-text>
+            <v-layout v-if="message.imageUrl != ''" justify-center>
+              <v-img
+                :src="message.imageUrl"
+                :lazy-src="message.imageUrl"
+                class="grey lighten-2;"
+                max-width="50%"
+              >
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
                   >
-                    <template v-slot:placeholder>
-                      <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                      >
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </v-row>
-                    </template>
-                  </v-img>
-                </v-flex>
-              </v-layout>
-              <v-layout justify-end wrap>
-                <v-flex xs12 sm4 text-center>
-                  <v-card-text v-text="message.date"></v-card-text>
-                </v-flex>
-                <!-- <v-flex xs12 sm2 text-center>
-                            <v-card-text>01-01-0001</v-card-text>
-                        </v-flex> -->
-              </v-layout>
-            </v-alert>
+                    <v-progress-circular
+                      indeterminate
+                      color="grey lighten-5"
+                    ></v-progress-circular>
+                  </v-row>
+                </template>
+              </v-img>
+            </v-layout>
+            <v-layout px-5 py-5 justify-end v-text="message.date"> </v-layout>
           </v-card>
-        </v-container>
+        </v-layout>
       </v-container>
     </v-content>
   </v-app>
 </template>
 
 <script>
+import AppBar from "./AppBar";
+import Drawer from "./Drawer";
 export default {
+  name: "home",
   data() {
     return {
-      drawer: null,
       notices: [],
     };
+  },
+  components: {
+    AppBar,
+    Drawer,
   },
   created() {
     this.$store.dispatch("showNotice", this.notices);
@@ -104,3 +69,6 @@ export default {
   },
 };
 </script>
+
+<style>
+</style>

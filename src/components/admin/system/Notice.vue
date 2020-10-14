@@ -170,7 +170,7 @@ export default {
     return {
       title: "",
       information: "",
-      user: this.$store.getters.getUser.data,
+      user: this.$store.getters.getUser,
       notices: [],
       progressUpload: 0,
       fileName: "",

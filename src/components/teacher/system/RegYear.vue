@@ -59,7 +59,7 @@ export default {
     return {
       dialog: null,
       selectYear: '',
-      user: this.$store.getters.getUser.data,
+      user: this.$store.getters.getUser,
       headers: [
         {text: "รหัสนักศึกษา", value: "id"},
         {text: "ชื่อ - สกุล", value: "name"},

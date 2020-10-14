@@ -7,32 +7,44 @@
       <vue-json-to-csv
         :csv-title="csvTitle"
         :json-data="records"
-        :labels="{teacher: {title: 'teacher'}, 
-                    register: {title: 'register'},
-                    max: {title: 'max'},
-                    min: {title: 'min'},
-                    mean: {title: 'mean'}}"
-        @success="val => handleSuccess(val)"
-        @error="val => handleError(val)"
+        :labels="{
+          teacher: { title: 'teacher' },
+          register: { title: 'register' },
+          max: { title: 'max' },
+          min: { title: 'min' },
+          mean: { title: 'mean' },
+        }"
+        @success="(val) => handleSuccess(val)"
+        @error="(val) => handleError(val)"
       >
         <v-btn color="info">
           <v-icon>mdi-cloud-download-outline</v-icon>Download
         </v-btn>
       </vue-json-to-csv>
     </v-container>
-    <v-data-table :headers="headers" :items="records" class="elevation-1" :items-per-page="5"></v-data-table>
-    <v-divider></v-divider>
-    <h3 class="display-2 text-center">ลงทะเบียน</h3>
-    <line-chart :data="register" :height="200" :options="options"/>
-    <v-divider></v-divider>
-    <h3 class="display-2 text-center">MAX GPAX</h3>
-    <line-chart :data="max" :height="200" :options="options"/>
-    <v-divider></v-divider>
-    <h3 class="display-2 text-center">MIN GPAX</h3>
-    <line-chart :data="min" :height="200" :options="options"/>
-    <v-divider></v-divider>
-    <h3 class="display-2 text-center">MEAN GPAX</h3>
-    <line-chart :data="mean" :height="200" :options="options"/>
+
+    <v-container fluid>
+      <v-data-table
+        :headers="headers"
+        :items="records"
+        class="elevation-1"
+        :items-per-page="5"
+      ></v-data-table>
+      <v-divider></v-divider>
+      <v-container class="py-10">
+        <h3 class="display-2 text-center">ลงทะเบียน</h3>
+        <line-chart :data="register" :height="100" :options="options" />
+        <v-divider></v-divider>
+        <h3 class="display-2 text-center">MAX GPAX</h3>
+        <line-chart :data="max" :height="200" :options="options" />
+        <v-divider></v-divider>
+        <h3 class="display-2 text-center">MIN GPAX</h3>
+        <line-chart :data="min" :height="200" :options="options" />
+        <v-divider></v-divider>
+        <h3 class="display-2 text-center">MEAN GPAX</h3>
+        <line-chart :data="mean" :height="200" :options="options" />
+      </v-container>
+    </v-container>
   </v-container>
 </template>
 
@@ -44,7 +56,7 @@ import firebase from "firebase";
 export default {
   components: {
     VueJsonToCsv,
-    LineChart
+    LineChart,
   },
   data() {
     return {
@@ -52,61 +64,63 @@ export default {
       headers: [
         {
           text: "อาจารย์ที่ปรึกษา",
-          value: "teacher"
+          value: "teacher",
         },
         {
           text: "จำนวนนักศึกษาลงทะเบียน",
-          value: "register"
+          value: "register",
         },
         {
           text: "Max GPAX",
-          value: "max"
+          value: "max",
         },
         {
           text: "Min GPAX",
-          value: "min"
+          value: "min",
         },
         {
           text: "Mean GPAX",
-          value: "mean"
-        }
+          value: "mean",
+        },
       ],
       records: [],
       register: {
         labels: ["ลงทะเบียน"],
-        datasets: []
+        datasets: [],
       },
       max: {
         labels: ["max"],
-        datasets: []
+        datasets: [],
       },
       min: {
         labels: ["min"],
-        datasets: []
+        datasets: [],
       },
       mean: {
         labels: ["mean"],
-        datasets: []
+        datasets: [],
       },
       options: {
         responsive: true,
         maintainAspectRatio: true,
         animation: {
-          duration: 0
+          duration: 0,
         },
         hover: {
-          animationDuration: 0
+          animationDuration: 0,
         },
         responsiveAnimationDuration: 0,
         scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true
-            }
-          }]
-        }
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
       },
-      csvTitle: 'statistic' + new Date()
+      csvTitle: "statistic" + new Date(),
     };
   },
   created() {
@@ -116,39 +130,40 @@ export default {
 
     firebase
       .database()
-      .ref("statistic/" + this.$store.getters.getSchoolYear)    //+ this.$store.getters.getSchoolYear
-      .on("child_added", snapshot => {
-        this.teachers.forEach(element => {
+      .ref("statistic/" + this.$store.getters.getSchoolYear) //+ this.$store.getters.getSchoolYear
+      .on("child_added", (snapshot) => {
+        this.teachers.forEach((element) => {
           if (element.value === snapshot.key) {
-            let colorGraph = "#" + Math.floor(Math.random() * 16777215).toString(16)
+            let colorGraph =
+              "#" + Math.floor(Math.random() * 16777215).toString(16);
             // record in table
             this.records.push({
               teacher: element.text,
               register: snapshot.val().register,
               max: snapshot.val().max,
               min: snapshot.val().min,
-              mean: snapshot.val().mean
+              mean: snapshot.val().mean,
             });
             // record in graph
             this.register.datasets.push({
               label: element.text,
               backgroundColor: colorGraph,
-              data: [snapshot.val().register]
+              data: [snapshot.val().register],
             });
             this.max.datasets.push({
               label: element.text,
               backgroundColor: colorGraph,
-              data: [snapshot.val().max]
+              data: [snapshot.val().max],
             });
             this.min.datasets.push({
               label: element.text,
               backgroundColor: colorGraph,
-              data: [snapshot.val().min]
+              data: [snapshot.val().min],
             });
             this.mean.datasets.push({
               label: element.text,
               backgroundColor: colorGraph,
-              data: [snapshot.val().mean]
+              data: [snapshot.val().mean],
             });
           }
         });
@@ -156,6 +171,6 @@ export default {
     /* eslint-disable */
     console.log(this.records);
     console.log(this.render);
-  }
+  },
 };
 </script>

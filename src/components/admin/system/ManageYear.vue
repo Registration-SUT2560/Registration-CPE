@@ -65,7 +65,6 @@
 
 <script>
 import firebase from "firebase";
-
 export default {
   data() {
     return {
@@ -99,7 +98,6 @@ export default {
             ...snapshot.val()
           });
         });
-
       // eslint-disable-next-line
       console.log(this.studentRegister);
     },
@@ -143,7 +141,6 @@ export default {
             min: minGpax,
             mean: mean
           });
-
         // *****************************************************************************
       }
       let regStudent = [];
@@ -177,7 +174,6 @@ export default {
         student: cStudent,
         teacher: cTeacher
       };
-
       await firebase
         .database()
         .ref("data_school_year/" + this.$store.getters.getSchoolYear)
@@ -219,7 +215,6 @@ export default {
             remainer = false;
           }
         }
-
         // if every teacher seat remain = 0
         if (!remainer) {
           this.teacherRegister.sort((a, b) => {
@@ -233,7 +228,6 @@ export default {
           this.teacherRegister[0].seat++;
         }
       });
-
       await firebase
         .database()
         .ref("result_register/" + this.$store.getters.getSchoolYear)
@@ -255,7 +249,6 @@ export default {
           ...snapshot.val()
         });
       });
-
     firebase
       .database()
       .ref("lecturer_register/" + this.$store.getters.getSchoolYear)
@@ -273,7 +266,6 @@ export default {
     this.studentRegister.sort((a, b) => {
       return b["gpax"] - a["gpax"] || a["date"] - b["date"];
     });
-
     // eslint-disable-next-line
     console.log(this.studentRegister);
     firebase

@@ -5,12 +5,12 @@
         <v-card-title>ลำดับการเลือกของคุณ</v-card-title>
         <v-card-text>
           <v-list dense>
-            <v-list-item>
+            <v-list-item v-for="(mapTeachers, i) in mapTeacher" :key="i">
               <v-list-item-action>
-                <v-icon>mdi-checkbox-blank-circle</v-icon>
+                <v-icon small>mdi-checkbox-blank-circle</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title></v-list-item-title>
+                <v-list-item-title>{{ mapTeacher[i] }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -23,9 +23,7 @@
                 <v-icon>mdi-checkbox-blank-circle</v-icon>
               </v-list-item-action>
               <v-list-item-content>
-                <v-list-item-title
-                  >{{ teacher.name }} {{ this.numTeacher }}</v-list-item-title
-                >
+                <v-list-item-title>{{ teacher.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -46,16 +44,16 @@ export default {
       regis: [],
       register: {},
       teacher: {},
+      user: this.$store.getters.getUser,
       teacherForShow: [],
       mapTeacher: [],
-      mapTeach: {},
-      numTeacher: {},
-      user: this.$store.getters.getUser.data,
-      test: 0,
+      teachers: [],
+
     };
   },
   created() {
     this.$store.dispatch("settingStudent", this.profiles);
+    this.$store.dispatch("settingTeacher", this.teachers);
 
     for (let i = 0; i < this.profiles.length; i++) {
       if (this.user === this.profiles[i].id) {
@@ -107,18 +105,19 @@ export default {
             id: snapshot.key,
             value: snapshot.val(),
           });
-          console.log(this.teacherForShow);
         }
       });
 
-    this.teacherForShow.forEach((snapshot) => {
-      for (i = 0; i < teacherForShow.length; i++)
-        this.numTeacher = {
-          id: snapshot.id,
-          value: snapshot.value,
-        };
-    });
-  },
-  watch: {},
+    for (let i = 0; i < this.teacherForShow.length; i++) {
+      for (let j = 0; j < this.teachers.length; j++) {
+        if (this.teacherForShow[i].value === this.teachers[j].value) {
+          this.mapTeacher[i] = this.teachers[j].text;
+        }
+      }
+    }
+    console.log(this.teacherForShow);
+    console.log(this.teachers);
+    console.log(this.mapTeacher);
+  }
 };
 </script>

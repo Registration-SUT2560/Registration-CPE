@@ -42,7 +42,7 @@ export default {
       years: [],
       register: {
         seat: 0,
-        user: this.$store.getters.getUser.data,
+        user: this.$store.getters.getUser,
         year: this.$store.getters.getSchoolYear
       },
       errorSnackbar: false

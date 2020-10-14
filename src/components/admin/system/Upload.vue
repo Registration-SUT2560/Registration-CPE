@@ -86,7 +86,6 @@
 // import VCsvImport from "vue-csv-import";
 import firebase from "firebase";
 import XLSX from "xlsx";
-import Alert from "../../Alert";
 
 export default {
   props: {
@@ -110,7 +109,6 @@ export default {
     };
   },
   components: {
-    Alert,
   },
   methods: {
     importData: function() {

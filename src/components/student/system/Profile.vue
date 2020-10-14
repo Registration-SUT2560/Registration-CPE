@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       profile: {},
-      user: this.$store.getters.getUser.data,
+      user: this.$store.getters.getUser,
       profiles: []
     };
   },

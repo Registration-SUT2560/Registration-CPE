@@ -1,13 +1,16 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app temporary>
-      <v-list danse>
+    <v-navigation-drawer src="../../assets/blue.jpg" v-model="drawer" app expand-on-hover>
+      <v-list danse color="cyan lighten-3">
         <v-list-item link to="profile">
           <v-list-item-action>
-            <v-icon>mdi-account-circle</v-icon>
+            <v-avatar size="36px">
+              <v-img :src="this.profile.image"></v-img>
+            </v-avatar>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>{{ this.user }}</v-list-item-title>
+            <v-list-item-title class="title">{{ this.user }}</v-list-item-title>
+            <v-list-item-title class="subtitle">{{ this.profile.fullname }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -21,7 +24,7 @@
             <v-list-item-title>ผลการลงทะเบียน</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="select" v-if="getCheckShow.status != false">
+        <v-list-item link to="select" v-if="this.selectProject != false">
           <v-list-item-action>
             <v-icon>mdi-account-search-outline</v-icon>
           </v-list-item-action>
@@ -52,11 +55,11 @@
         </v-list-item>
       </v-list>
       <v-container>
-        <h6 class="title">ระบบ</h6>
+        <h6 class="title" align="center">ระบบ</h6>
       </v-container>
       <v-divider></v-divider>
       <v-list dense>
-        <v-list-item link replace to="slogin">
+        <v-list-item link replace @click="logOut">
           <v-list-item-action>
             <v-icon>mdi-account-off</v-icon>
           </v-list-item-action>
@@ -67,8 +70,8 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app color="primary" dark>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-app-bar id="app-bar" absolute app color="transparent" flat height="75">
+      <v-app-bar-nav-icon v-on:click="drawer = (!drawer)"></v-app-bar-nav-icon>
       <v-toolbar-title>Project Registration System</v-toolbar-title>
       <v-row class="pa-5">
         <v-list-item
@@ -90,20 +93,21 @@
           <v-list-item-content>
             <v-list-item-title>ประกาศข่าวใหม่</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
-      </v-row>
+        </v-list-item> </v-row
+      ><v-spacer />
+      <v-card rounded="5" flat class="grey lighten-4 rounded-pill"
+        ><v-btn text fab disabled>
+          <v-icon class="small">mdi-account</v-icon>
+        </v-btn>
+        <span class="mr-4">{{ this.profile.fullname }}</span>
+      </v-card>
     </v-app-bar>
 
-    <v-content>
+    <v-content class="grey lighten-5">
       <v-container fluid fill-height>
         <v-layout>
           <v-flex>
             <router-view></router-view>
-            <v-card>
-              <v-card-title
-                >{{ getCheckShow.status }} {{ checkShow }}</v-card-title
-              >
-            </v-card>
           </v-flex>
         </v-layout>
       </v-container>
@@ -113,43 +117,49 @@
 
 <script>
 import firebase from "firebase";
+// eslint-disable-next-line no-unused-vars
+import { mapMutations } from "vuex";
 
 export default {
   data() {
     return {
-      drawer: null,
+      drawer: true,
       //messages: 2,
       noticeStatus: [],
+      profile: {},
       profiles: [],
-      result: {},
-      user: this.$store.getters.getUser.data,
-      checkShow: [],
-      getCheckShow: {},
-      show: null,
+      user: this.$store.getters.getUser,
+      selectProject: true
     };
   },
   methods: {
-    ChangeStatus: function() {
+    ChangeStatus: function () {
       this.noticeStatus[0].status = false;
-      firebase
-        .database()
-        .ref("noticeStatus/")
-        .child(this.user)
-        .update({
-          status: false,
-        });
+      firebase.database().ref("noticeStatus/").child(this.user).update({
+        status: false,
+      });
+    },
+    logOut: function () {
+      this.$store.commit("logOut");
+      // window.sessionStorage.clear();
+      this.$router.push("/home");
     },
   },
   created() {
     console.log("Dashboard Created !!");
     this.$store.dispatch("settingStudent", this.profiles);
 
-    for (let i = 0; i < this.profiles.length; i++) {
-      if (this.user === this.profiles[i].id) {
-        this.result = this.profiles[i];
-        break;
+    this.profiles.forEach((value) => {
+      if (value.id === this.user) {
+        this.profile = {
+          fullname: value.prefix + " " + value.firstname + " " + value.lastname,
+          gpax: value.gpax,
+          year: value.year,
+          image: value.image,
+        };
+        return;
       }
-    }
+    });
 
     firebase
       .database()
@@ -166,35 +176,17 @@ export default {
 
     firebase
       .database()
-      .ref("lecturer_register/" + this.result.year)
+      .ref(
+        "lecturer_register/" + this.profile.year + "/" + this.user
+      )
       .on("child_added", (snapshot) => {
-        if (snapshot.key === this.user) {
-          this.checkShow.push({
-            id: snapshot.key,
-            ...snapshot.val(),
-          });
-          console.log(this.checkShow);
-        }
-      });
-  },
-  watch: {
-    checkShow: function() {
-      this.checkShow.forEach((snapshot) => {
-        if (snapshot.id === this.user) {
-          this.getCheckShow = {
-            id: snapshot.id,
-            status: snapshot.status,
-          };
-        }
-      });
-      if (this.getCheckShow.status === false) {
-        setTimeout(() => {
+        if (snapshot.key != null) {
+          this.selectProject = false;
           this.$router.replace({
-            path: "/student/" + this.getCheckShow.id + "/project",
+            path: "/student/" + this.user + "/project",
           });
-        }, 800);
-      }
-    },
+        }
+      });
   },
 };
 </script>

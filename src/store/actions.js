@@ -1,5 +1,6 @@
 import firebase from "firebase";
 import router from "@/router";
+import swal from "sweetalert";
 
 export const actions = {
   // login handler
@@ -16,6 +17,7 @@ export const actions = {
             v.val().password.toString() === payload.password
           ) {
             commit("setUser", payload.username);
+            swal("Login Success!", "Welcome to admin login:)", "success");
             router.push("/admin/" + payload.username);
           }
         });
@@ -35,6 +37,7 @@ export const actions = {
             v.val().password.toString() === payload.password
           ) {
             commit("setUser", payload.username);
+            swal("Login Success!", "Welcome to teacher login:)", "success");
             router.push("/teacher/" + payload.username);
           }
         });
@@ -54,6 +57,7 @@ export const actions = {
             v.val().password.toString() === payload.password
           ) {
             commit("setUser", payload.username);
+            swal("Login Success!", "Welcome to stdent login:)", "success");
             router.push("/student/" + payload.username);
           }
         });
