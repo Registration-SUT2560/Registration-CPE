@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer src="../../assets/blue.jpg" v-model="drawer" app expand-on-hover>
+    <v-navigation-drawer src="../../assets/blue.jpg" app :expand-on-hover="drawer">
       <v-list danse color="cyan lighten-3">
         <v-list-item link to="profile">
           <v-list-item-action>

@@ -6,22 +6,22 @@ import Home from "../components/Home.vue";
 import AllNotice from "../components/AllNotice";
 
 // administrator component
-import Login from "../components/admin/Login";
-import Dashboard from "../components/admin/Dashboard";
-import Upload from "../components/admin/system/Upload";
-import SchoolYear from "../components/admin/system/SchoolYear";
-import Statistic from "../components/admin/system/Statistic";
-import ManageYear from "../components/admin/system/ManageYear";
-import Manual from "../components/admin/system/Manual";
-import ManageTeacher from "../components/admin/system/ManageTeacher";
-import NoticeAdmin from "../components/admin/system/Notice";
-import SeatTeacher from "../components/admin/system/SeatTeacher";
+import Login from "../components/Admin/Login";
+import Dashboard from "../components/Admin/Dashboard";
+import Upload from "../components/Admin/system/Upload";
+import SchoolYear from "../components/Admin/system/SchoolYear";
+import Statistic from "../components/Admin/system/Statistic";
+import ManageYear from "../components/Admin/system/ManageYear";
+import Manual from "../components/Admin/system/Manual";
+import ManageTeacher from "../components/Admin/system/ManageTeacher";
+import NoticeAdmin from "../components/Admin/system/Notice";
+import SeatTeacher from "../components/Admin/system/SeatTeacher";
 
 // teacher component
-import TeacherDashBoard from "../components/teacher/Dashboard";
-import Notice from "../components/teacher/system/Notice";
-import Profile from "../components/teacher/system/Profile";
-import RegYear from "../components/teacher/system/RegYear";
+import TeacherDashBoard from "../components/Teacher/Dashboard";
+import Notice from "../components/Teacher/system/Notice";
+import Profile from "../components/Teacher/system/Profile";
+import RegYear from "../components/Teacher/system/RegYear";
 
 // student component
 import StudentDashboard from "../components/Student/Dashboard";
@@ -36,10 +36,6 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "*",
-    redirect: "/home",
-  },
-  {
-    path: "/",
     redirect: "/home",
   },
   {

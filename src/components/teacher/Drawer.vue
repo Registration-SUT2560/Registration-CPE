@@ -1,9 +1,8 @@
 <template>
   <v-navigation-drawer
     src="../../assets/blue.jpg"
-    v-model="drawer"
     app
-    expand-on-hover
+    :expand-on-hover="drawer"
   >
     <v-list danse>
       <v-list-item link to="profile">
